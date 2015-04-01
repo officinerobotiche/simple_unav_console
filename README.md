@@ -7,7 +7,7 @@ This demo is useful to understand how to use "orblibcpp" [https://github.com/off
 ```
 $ mk dir simple_unav_joypad
 $ cd simple_unav_joypad
-$ git clone https://github.com/officinerobotiche/orblibcpp
+$ git clone https://github.com/officinerobotiche/simple_unav_joypad.git
 ```
 * Open the "pro" file with QtCreator and modify "ORBLIBCPP_PATH" with the absolute path to "orblibcpp"
 * Compile and run
