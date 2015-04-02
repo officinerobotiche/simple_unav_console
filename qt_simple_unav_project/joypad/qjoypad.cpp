@@ -1,4 +1,4 @@
-#include <qjoypad.h>
+#include "qjoypad.h"
 #include <QPainter>
 #include <QDebug>
 

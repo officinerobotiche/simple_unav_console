@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui serialport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -16,12 +16,15 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    joypad/qjoypad.cpp
+    joypad/qjoypad.cpp \
+    robotparamscalculatedialog.cpp
 
 HEADERS  += mainwindow.h \
-    joypad/qjoypad.h
+    joypad/qjoypad.h \
+    robotparamscalculatedialog.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    robotparamscalculatedialog.ui
 
 RESOURCES += \
     resources.qrc
