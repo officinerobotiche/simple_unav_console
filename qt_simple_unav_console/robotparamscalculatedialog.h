@@ -26,6 +26,8 @@ private slots:
 
     void on_lineEdit_motor_ratio_textEdited(const QString &arg1);
 
+
+
 private:
     Ui::RobotParamsCalculateDialog *ui;
 

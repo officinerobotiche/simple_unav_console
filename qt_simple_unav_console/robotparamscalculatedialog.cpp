@@ -17,17 +17,18 @@ RobotParamsCalculateDialog::RobotParamsCalculateDialog(QWidget *parent) :
     _calculated = false;
 
     int cpr;
-    double ratio, wheel_rad_mm;
+    double ratio, wheel_rad_mm, wheel_base;
     double k_ang, k_vel;
     qint8 versus_left, versus_right;
     quint8 enable_mode;
 
-    g_settings->loadMotorParams( cpr, ratio, wheel_rad_mm, k_ang, k_vel,
+    g_settings->loadMotorParams( cpr, ratio, wheel_rad_mm, wheel_base, k_ang, k_vel,
                                 versus_left, versus_right, enable_mode  );
 
     ui->lineEdit_enc_cpr->setText( tr("%1").arg(cpr) );
     ui->lineEdit_motor_ratio->setText( tr("%1").arg(ratio) );
     ui->lineEdit_wheel_rad_mm->setText( tr("%1").arg(wheel_rad_mm) );
+    ui->lineEdit_wheelbase_mm->setText( tr("%1").arg(wheel_base)  );
     ui->lineEdit_k_ang_left->setText( tr("%1").arg(k_ang) );
     ui->lineEdit_k_ang_right->setText( tr("%1").arg(k_ang) );
     ui->lineEdit_k_vel_left->setText( tr("%1").arg(k_vel) );
@@ -117,6 +118,7 @@ void RobotParamsCalculateDialog::on_buttonBox_accepted()
                 ui->lineEdit_enc_cpr->text().toInt(),
                 ui->lineEdit_motor_ratio->text().toDouble(),
                 ui->lineEdit_wheel_rad_mm->text().toDouble(),
+                ui->lineEdit_wheelbase_mm->text().toDouble(),
                 _k_ang, _k_vel,
                 versus_left, versus_right, enable_mode );
 

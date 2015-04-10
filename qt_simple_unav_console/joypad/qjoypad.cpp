@@ -29,6 +29,8 @@ QJoypad::QJoypad(QWidget *parent) :
         sizePolicy.setWidthForHeight(true);
         this->setSizePolicy( sizePolicy );
     }
+    
+
 }
 
 void QJoypad::setJoypadValues( float x, float y )
@@ -64,11 +66,19 @@ void QJoypad::setJoypadValues( float x, float y )
     //qDebug() /*<< PREFIX*/ << "emitted newJoypadValues( mJoyRelPos.x(), -mJoyRelPos.y() );";
 }
 
+void QJoypad::reset()
+{
+    mJoyRelPos.setX( 0.0f );
+    mJoyRelPos.setY( 0.0f );
+
+    emit newJoypadValues( 0.0f, 0.0f );
+}
+
 void QJoypad::resizeEvent( QResizeEvent* event )
 {
     QSize newSize = event->size();
 
-    QPixmap bgPm = QPixmap(":/joypad/images/joystick_background.png");
+    QPixmap bgPm = QPixmap(":/joypad/Joypad/joystick_background.png");
 
     mJoyBg = bgPm.scaled( newSize,
                           Qt::IgnoreAspectRatio,
@@ -77,7 +87,7 @@ void QJoypad::resizeEvent( QResizeEvent* event )
     float imScaleX = (float)mJoyBg.width()/bgPm.width();
     float imScaleY = (float)mJoyBg.height()/bgPm.height();
 
-    QPixmap pm = QPixmap(":/joypad/images/joystick_thumb.png");
+    QPixmap pm = QPixmap(":/joypad/Joypad/joystick_thumb.png");
     QSize scaledPadSize;
     int newW = ((int)((float)pm.width()*imScaleX)+0.5f);
     scaledPadSize.setWidth( newW );
@@ -109,13 +119,8 @@ void QJoypad::mousePressEvent( QMouseEvent *event )
 {
     QPoint pos = event->pos();
 
-
     //    fprintf( stderr, "Pos: (%3d,%3d)/n", (int)pos.x(), (int)pos.y());
     //    fflush(stderr);
-
-    float posX = pos.x() - width()/2;
-    mJoyRelPos.setX( posX*mPxScaleX );
-
 
     QPointF centerWidget;
     centerWidget.setX( width()/2);
@@ -152,7 +157,6 @@ void QJoypad::mousePressEvent( QMouseEvent *event )
 
     emit mouseButtonDown( event );
 
-
     //qDebug() /*<< PREFIX*/ << "emitted mouseButtonDown( event );";
     //qDebug() /*<< PREFIX*/ << "emitted newJoypadValues( mJoyRelPos.x(), -mJoyRelPos.y() );";
 }
@@ -162,9 +166,7 @@ void QJoypad::mouseMoveEvent( QMouseEvent *event )
     QPoint pos = event->pos();
 
     //    fprintf( stderr, "Pos: (%3d,%3d)/n", (int)pos.x(), (int)pos.y());
-    //    fflush(stderr);
-
-
+    //    fflush(stderr);    
 
     QPointF centerWidget;
     centerWidget.setX( width()/2);
@@ -228,16 +230,16 @@ void QJoypad::paintEvent(QPaintEvent *event)
 
     QPainter painter(this);
 
-    painter.setOpacity( 0.7 );
+    /*painter.setOpacity( 0.2 );
     painter.drawLine( width()/2, height()/2,
-                      realJoyPosX+width()/2, realJoyPosY+height()/2 );
+                      realJoyPosX+width()/2, realJoyPosY+height()/2 );*/
 
     // Background
-    painter.setOpacity(0.4);
+    painter.setOpacity(1.0);
     painter.drawPixmap( 0, 0, mJoyBg);
 
     // Pad
-    painter.setOpacity( 0.7 );
+    painter.setOpacity( 0.8 );
     painter.drawPixmap( padOrigX, padOrigY, mJoypad );
 }
 
@@ -245,6 +247,5 @@ void QJoypad::paintEvent(QPaintEvent *event)
 {
     return w;
 }*/
-
 
 

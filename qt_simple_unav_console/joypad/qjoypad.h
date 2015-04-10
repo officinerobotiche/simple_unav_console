@@ -5,7 +5,6 @@
 #include <QPaintEvent>
 #include <QResizeEvent>
 
-
 class QJoypad : public QWidget
 {
     Q_OBJECT
@@ -30,6 +29,7 @@ signals:
 
 public slots:
     void    setJoypadValues( float x, float y ); // Set Joypad position in range [-100,+100]
+    void    reset(); // Reset current values, used in emergency
 
 private:
     QPointF   mJoyRelPos;  ///< Relative joy position
@@ -47,6 +47,4 @@ private:
     int mPadSize; ///< Size of the pad image
 };
 
-
 #endif // QJoypad_H
-
