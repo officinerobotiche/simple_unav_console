@@ -407,8 +407,17 @@ void MainWindow::onStatusTimerTimeout()
     double perc_fw = robot_speed_fw/(((double)ui->verticalSlider_max_fw_speed->value())/1000.0) * 100.0;
     ui->progressBar_fw_speed->setValue((int)(perc_fw+0.5));
 
-    double perc_rot = RAD2DEG*robot_speed_rot/(((double)ui->verticalSlider_max_rot_speed->value())/10.0) * 100.0;
-    ui->progressBar_rot_speed->setValue((int)(perc_rot+0.5));
+    double perc_rot = fabs(RAD2DEG*robot_speed_rot)/(((double)ui->verticalSlider_max_rot_speed->value())/10.0) * 100.0;
+    if(robot_speed_rot>0)
+    {
+        ui->progressBar_rot_speed_pos->setValue((int)(perc_rot+0.5));
+        ui->progressBar_rot_speed_neg->setValue(0);
+    }
+    else
+    {
+        ui->progressBar_rot_speed_neg->setValue((int)(perc_rot+0.5));
+        ui->progressBar_rot_speed_pos->setValue(0);
+    }
 }
 
 void MainWindow::onCommandTimerTimeout()
