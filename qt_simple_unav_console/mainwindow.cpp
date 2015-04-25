@@ -13,6 +13,7 @@
 #define STATUS_UPDATE_PERIOD 30
 
 #define RAD2DEG 57.29577951308233
+#define DEG2RAD 0.017453293
 
 using namespace std;
 
@@ -123,6 +124,8 @@ bool MainWindow::sendMotorParams(quint8 motIdx, double k_vel, double k_ang,
         return false;
     }
 
+    sleep(1);
+
     return true;
 }
 
@@ -214,6 +217,9 @@ void MainWindow::disconnectSerial()
         stopMotor(1);
 
         _uNav->close();
+
+        delete _uNav;
+        _uNav = NULL;
     }
     catch( parser_exception& e)
     {
@@ -237,8 +243,7 @@ void MainWindow::disconnectSerial()
         return;
     }
 
-    delete _uNav;
-    _uNav = NULL;
+
 }
 
 bool MainWindow::connectSerial()
@@ -275,10 +280,10 @@ bool MainWindow::connectSerial()
         return false;
     }
 
-    _prevFwSpeed = 0.0f;
-    _prevRotSpeed = 0.0f;
-    _fwSpeed = 0.0f;
-    _rotSpeed = 0.0f;
+    _prevFwSpeed = 0.0;
+    _prevRotSpeed = 0.0;
+    _fwSpeed = 0.0;
+    _rotSpeed = 0.0;
 
     // >>>>> Qt signals connecting
     connect( ui->widget, SIGNAL(newJoypadValues(float,float)),
@@ -297,7 +302,58 @@ bool MainWindow::connectSerial()
     // >>>>> Robot params updating
     g_settings->loadMotorParams( _cpr, _ratio, _wheel_rad_mm, _wheel_base_mm, _k_ang, _k_vel,
                                 _versus_left, _versus_right, _enable_mode  );
+
+    sendMotorParams( 0, _k_vel, _k_ang, _versus_left, _enable_mode );
+    sendMotorParams( 1, _k_vel, _k_ang, _versus_right, _enable_mode );
     // <<<<< Robot params updating
+
+    sendEnable( 0, true );
+    sendEnable( 1, true );
+
+    sendPIDGains( 0, 0.05, 0.2, 0.45 );
+    sendPIDGains( 1, 0.05, 0.2, 0.45 );
+
+    return true;
+}
+
+bool MainWindow::sendEnable(int motIdx, bool enable )
+{
+    //if( !_connected )
+    //    return false;
+
+    try
+    {
+        motor_control_t enable_val = enable ? STATE_CONTROL_VELOCITY : STATE_CONTROL_DISABLE;
+
+        quint8 command;
+        if(motIdx==0)
+            command = ENABLE_MOTOR_L;
+        else
+            command = ENABLE_MOTOR_R;
+
+        _uNav->parserSendPacket( _uNav->createDataPacket( command, HASHMAP_MOTION, (abstract_message_u*)&enable_val ) );
+    }
+    catch( parser_exception& e)
+    {
+        qDebug() << Q_FUNC_INFO << tr("Serial error: %1").arg(e.what());
+
+        throw e;
+        return false;
+    }
+    catch( boost::system::system_error& e)
+    {
+        qDebug() << Q_FUNC_INFO << tr("Serial error: %1").arg( e.what() );
+
+        throw e;
+        return false;
+    }
+    catch(...)
+    {
+        qDebug() << Q_FUNC_INFO << tr("Serial error: Unknown error");
+
+        throw;
+        return false;
+    }
 
     return true;
 }
@@ -322,11 +378,13 @@ void MainWindow::onNewJoypadValues(float X, float Y)
     float signX = X<0?-1.0:1.0;
     float signY = Y<0?-1.0:1.0;
 
-    float newX = signX*0.5f*pow(X/maxAxis,2); // Mappatura quadratica
-    float newY = signY*0.5f*pow(Y/maxAxis,2);
+    float newX = signX*pow(X/maxAxis,2); // Mappatura quadratica
+    float newY = signY*pow(Y/maxAxis,2);
 
-    _fwSpeed = (((float)ui->verticalSlider_max_fw_speed->value())/1000.0f)*newX;
-    _rotSpeed = (((float)ui->verticalSlider_max_rot_speed->value())/10.0f)*newY;
+    _fwSpeed  = (((float)ui->verticalSlider_max_fw_speed->value())/1000.0f)*newY;
+    _rotSpeed = (((float)ui->verticalSlider_max_rot_speed->value())/10.0f)*newX;
+
+    qDebug() << _rotSpeed;
 }
 
 void MainWindow::onStatusTimerTimeout()
@@ -349,33 +407,50 @@ void MainWindow::onStatusTimerTimeout()
     double perc_fw = robot_speed_fw/(((double)ui->verticalSlider_max_fw_speed->value())/1000.0) * 100.0;
     ui->progressBar_fw_speed->setValue((int)(perc_fw+0.5));
 
-    double perc_rot = robot_speed_rot/(((double)ui->verticalSlider_max_rot_speed->value())/10.0) * 100.0;
+    double perc_rot = RAD2DEG*robot_speed_rot/(((double)ui->verticalSlider_max_rot_speed->value())/10.0) * 100.0;
     ui->progressBar_rot_speed->setValue((int)(perc_rot+0.5));
 }
 
 void MainWindow::onCommandTimerTimeout()
 {
-    if( (fabs( _prevFwSpeed - _fwSpeed ) < 0.005 ) ||
+    /*if( (fabs( _prevFwSpeed - _fwSpeed ) < 0.005 ) ||
             (fabs( _prevRotSpeed - _rotSpeed ) < 0.1 ) )
-        return;
+        return;*/
 
     sendRobotSpeeds( _fwSpeed, _rotSpeed );
-
 }
 
 bool MainWindow::sendRobotSpeeds( double fwSpeed, double rotSpeed )
 {
+    //qDebug() << "fwSpeed: " << fwSpeed << " - rotSpeed: " << rotSpeed;
+
     double omega0, omega1;
     double wheel_rad_m = _wheel_rad_mm/1000.0;
     double L = _wheel_base_mm/1000.0;
 
-    omega0 = (2.0*fwSpeed-rotSpeed*L)/(2*wheel_rad_m);
-    omega1 = (2.0*fwSpeed+rotSpeed*L)/(2*wheel_rad_m);
+    double rad = rotSpeed*DEG2RAD;
+
+    omega0 = (2.0*fwSpeed-rad*L)/(2.0*wheel_rad_m);
+    omega1 = (2.0*fwSpeed+rad*L)/(2.0*wheel_rad_m);
+
+    if( omega0 > 32.0 )
+        omega0 = 32.0;
+    else if( omega0 < -32.0 )
+        omega0 = -32.0;
+
+    if( omega1 > 32.0 )
+        omega1 = 32.0;
+    else if( omega1 < -32.0 )
+        omega1 = -32.0;
+
 
     int16_t rot_speed0 = (int16_t)(omega0 * 1000);
     int16_t rot_speed1 = (int16_t)(omega1 * 1000);
 
-    bool ok0 = sendMotorSpeed( 1, rot_speed0 );
+    qDebug() << "omega0: " << omega0 << " - omega1: " << omega1;
+    qDebug() << "rot_speed0: " << rot_speed0 << " - rot_speed1: " << rot_speed1;
+
+    bool ok0 = sendMotorSpeed( 0, rot_speed0 );
     bool ok1 = sendMotorSpeed( 1, rot_speed1 );
 
     return (ok0 & ok1);
@@ -468,8 +543,10 @@ bool MainWindow::getMotorStatus(quint8 motIdx)
 }
 
 
+
 bool MainWindow::sendMotorSpeed( quint8 motorIdx, int16_t speed )
 {
+
     try
     {
         motor_control_t motor_ref = (int16_t) speed;
@@ -516,5 +593,49 @@ bool MainWindow::sendMotorSpeeds( int16_t speed0, int16_t speed1 )
     return (ok0 & ok1);
 }
 
+bool MainWindow::sendPIDGains( quint8 motorIdx, double kp, double ki, double kd )
+{
+    //if( !_connected )
+    //    return false;
 
+    try
+    {
+        pid_control_t pid;
+        pid.kp = kp;
+        pid.ki = ki;
+        pid.kd = kd;
+
+        quint8 command;
+        if(motorIdx==0)
+            command = PID_CONTROL_L;
+        else
+            command = PID_CONTROL_R;
+
+
+        _uNav->parserSendPacket(_uNav->createDataPacket( command, HASHMAP_MOTION, (abstract_message_u*) & pid), 3, boost::posix_time::millisec(200));
+    }
+    catch( parser_exception& e)
+    {
+        qDebug() << Q_FUNC_INFO << tr("Serial error: %1").arg(e.what());
+
+        throw e;
+        return false;
+    }
+    catch( boost::system::system_error& e)
+    {
+        qDebug() << Q_FUNC_INFO << tr("Serial error: %1").arg( e.what() );
+
+        throw e;
+        return false;
+    }
+    catch(...)
+    {
+        qDebug() << Q_FUNC_INFO << tr("Serial error: Unknown error");
+
+        throw;
+        return false;
+    }
+
+    return true;
+}
 

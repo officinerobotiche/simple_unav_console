@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>755</width>
-    <height>377</height>
+    <height>391</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -70,7 +70,7 @@
         <item>
          <widget class="QSlider" name="verticalSlider_max_rot_speed">
           <property name="maximum">
-           <number>7200</number>
+           <number>2000</number>
           </property>
           <property name="singleStep">
            <number>100</number>
@@ -456,7 +456,7 @@
      <x>0</x>
      <y>0</y>
      <width>755</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuOption">

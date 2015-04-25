@@ -23,11 +23,15 @@ protected:
     bool connectSerial();
     void disconnectSerial();
 
+    bool sendEnable(int motIdx, bool enable );
+
     bool sendRobotSpeeds(double fwSpeed, double rotSpeed );
 
     bool sendMotorSpeed( quint8 motorIdx, int16_t speed ); ///< Send motor speed in rad/sec
     bool sendMotorSpeeds( int16_t speed0, int16_t speed1 ); ///< Send motor speeds in rad/sec
     bool stopMotor( quint8 motorIdx ); ///< Stops a motor
+
+    bool sendPIDGains( quint8 motorIdx, double kp, double ki, double kd );
 
     bool getMotorStatus(quint8 motIdx); ///< Retrieve the status of the motor
 

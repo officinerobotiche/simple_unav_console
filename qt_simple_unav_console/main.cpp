@@ -11,5 +11,18 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
-    return a.exec();
+    int res;
+    try
+    {
+        res = a.exec();
+    }
+    catch(...)
+    {
+        delete g_settings;
+        exit( EXIT_FAILURE );
+    }
+
+    delete g_settings;
+
+    return res;
 }

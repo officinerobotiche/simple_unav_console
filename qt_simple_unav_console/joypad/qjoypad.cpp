@@ -78,7 +78,7 @@ void QJoypad::resizeEvent( QResizeEvent* event )
 {
     QSize newSize = event->size();
 
-    QPixmap bgPm = QPixmap(":/joypad/Joypad/joystick_background.png");
+    QPixmap bgPm = QPixmap(":/joypad/images/joystick_background.png");
 
     mJoyBg = bgPm.scaled( newSize,
                           Qt::IgnoreAspectRatio,
@@ -87,7 +87,7 @@ void QJoypad::resizeEvent( QResizeEvent* event )
     float imScaleX = (float)mJoyBg.width()/bgPm.width();
     float imScaleY = (float)mJoyBg.height()/bgPm.height();
 
-    QPixmap pm = QPixmap(":/joypad/Joypad/joystick_thumb.png");
+    QPixmap pm = QPixmap(":/joypad/images/joystick_thumb.png");
     QSize scaledPadSize;
     int newW = ((int)((float)pm.width()*imScaleX)+0.5f);
     scaledPadSize.setWidth( newW );
