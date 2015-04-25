@@ -7,5 +7,5 @@ This demo is useful to understand how to use "orblibcpp" [https://github.com/off
 ```
 $ git clone https://github.com/officinerobotiche/simple_unav_console.git
 ```
-* Open the "pro" file with QtCreator and modify "ORBLIBCPP_PATH" with the absolute path to "orblibcpp"
+* Open the "pro" file with QtCreator and modify "ORBLIBCPP_PATH" with the absolute path to "orblibcpp" (e.g. ```include(../../orblibcpp/orblibcpp/orblibcpp.pri)```)
 * Compile and run
