@@ -77,15 +77,8 @@ private:
     quint8 _enc_pos;
     qint16 _bridge_V;
 
-    double _current_value_0;
-    double _current_setPoint_0;
-    double _current_error_0;
-    double _current_control_0;
-
-    double _current_value_1;
-    double _current_setPoint_1;
-    double _current_error_1;
-    double _current_control_1;
+    double _current_vel_0;
+    double _current_vel_1;
 };
 
 #endif // MAINWINDOW_H

@@ -12,19 +12,15 @@ RobotParamsCalculateDialog::RobotParamsCalculateDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    _k_ang = 0.0;
-    _k_vel = 0.0;
-    _calculated = false;
-
     int cpr;
     double ratio, wheel_rad_mm, wheel_base;
-    double k_ang, k_vel;
     qint8 versus_left, versus_right;
     quint8 enable_mode;
     quint8 enc_pos;
+    qint16 bridge_V;
 
-    g_settings->loadMotorParams( cpr, ratio, wheel_rad_mm, wheel_base, k_ang, k_vel,
-                                versus_left, versus_right, enable_mode, enc_pos );
+    g_settings->loadMotorParams( cpr, ratio, wheel_rad_mm, wheel_base,
+                                versus_left, versus_right, enable_mode, enc_pos, bridge_V );
 
     ui->lineEdit_enc_cpr->setText( tr("%1").arg(cpr) );
     ui->lineEdit_motor_ratio->setText( tr("%1").arg(ratio) );
@@ -39,6 +35,8 @@ RobotParamsCalculateDialog::RobotParamsCalculateDialog(QWidget *parent) :
 
     ui->radioButton_enc_wheel->setChecked( enc_pos==0?true:false );
     ui->radioButton_enc_shaft->setChecked( enc_pos==1?true:false );
+
+    ui->lineEdit_bridge->setText( tr("%1").arg(bridge_V));
 }
 
 RobotParamsCalculateDialog::~RobotParamsCalculateDialog()
@@ -68,9 +66,6 @@ bool RobotParamsCalculateDialog::getParams(float& wheel_radius, float& wheel_bas
 
 void RobotParamsCalculateDialog::on_buttonBox_accepted()
 {
-    if( !_calculated )
-        on_pushButton_clicked();
-
     int versus_left = ui->checkBox_invert_mot_left->isChecked()?-1:1;
     int versus_right = ui->checkBox_invert_mot_right->isChecked()?-1:1;
 
