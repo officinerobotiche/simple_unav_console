@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "robotparamscalculatedialog.h"
 
 #include <string>
 
@@ -77,7 +76,7 @@ void MainWindow::on_actionParameters_triggered()
 
 }
 
-bool MainWindow::sendMotorParams(quint8 motIdx, double k_vel, double k_ang,
+bool MainWindow::sendMotorParams(quint8 motIdx, quint16 cpr, float ratio,
                                  qint8 versus, quint8 enable_mode )
 {
     if( !_uNav )
@@ -90,9 +89,17 @@ bool MainWindow::sendMotorParams(quint8 motIdx, double k_vel, double k_ang,
     {
         parameter_motor_t param;
         param.enable_set = enable_mode;
-        param.k_ang = k_ang;
-        param.k_vel = k_vel;
+        param.k_ang = ratio;
+        param.k_vel = cpr;
         param.versus = versus;
+
+        motor_parameter_t param;
+            param.encoder.cpr = cpr;
+            param.bridge.enable = enable_mode;
+            param.encoder.position = (uint8_t) config.Encoder;
+            param.ratio = ratio;
+            param.rotation = versus;
+            param.bridge.volt = (int16_t) (config.Bridge*1000);
 
         quint8 command;
         if(motIdx==0)

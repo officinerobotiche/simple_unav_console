@@ -11,8 +11,7 @@
 #define EN_POLARITY "enable_polarity"
 #define DIRECTION_L "direction_left"
 #define DIRECTION_R "direction_right"
-#define K_VEL       "k_vel"
-#define K_ANG       "k_ang"
+#define ENCODER_POS "encoder_pos"
 
 class CSettings
 {
@@ -22,10 +21,10 @@ public:
 
 public:
     bool saveMotorParams(int cpr, double ratio, double wheel_rad_mm, double wheelbase_mm,
-                         double k_ang, double k_vel , qint8 versus_left, qint8 versus_right, quint8 enable_mode );
+                         qint8 versus_left, qint8 versus_right, quint8 enable_mode, quint8 enc_pos );
     bool loadMotorParams(int& cpr, double &ratio, double &wheel_rad_mm, double &wheelbase_mm,
-                          double& k_ang, double& k_vel , qint8& versus_left, qint8& versus_right,
-                          quint8& enable_mode );
+                         qint8& versus_left, qint8& versus_right,
+                          quint8& enable_mode , quint8& enc_pos );
 
 
 private:

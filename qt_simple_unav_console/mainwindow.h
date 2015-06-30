@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QTimer>
 
-#include <ParserPacket.h>
+#include <serial_parser_packet/ParserPacket.h>
 
 namespace Ui {
 class MainWindow;
@@ -35,7 +35,7 @@ protected:
 
     bool getMotorStatus(quint8 motIdx); ///< Retrieve the status of the motor
 
-    bool sendMotorParams(quint8 motIdx, double k_vel, double k_ang,
+    bool sendMotorParams(quint8 motIdx, quint16 cpr, float ratio,
                          qint8 versus, quint8 enable_mode );
 
 private:

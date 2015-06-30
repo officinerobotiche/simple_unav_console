@@ -18,13 +18,11 @@ SOURCES += \
     main.cpp\
     mainwindow.cpp \
     joypad/qjoypad.cpp \
-    robotparamscalculatedialog.cpp \
     csettings.cpp
 
 HEADERS  += \
     mainwindow.h \
     joypad/qjoypad.h \
-    robotparamscalculatedialog.h \
     csettings.h
 
 FORMS    += mainwindow.ui \
