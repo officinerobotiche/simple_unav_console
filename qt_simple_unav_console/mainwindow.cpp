@@ -456,8 +456,8 @@ bool MainWindow::sendRobotSpeeds( double fwSpeed, double rotSpeed )
     int16_t rot_speed0 = (int16_t)(omega0 * 1000);
     int16_t rot_speed1 = (int16_t)(omega1 * 1000);
 
-    qDebug() << "omega0: " << omega0 << " - omega1: " << omega1;
-    qDebug() << "rot_speed0: " << rot_speed0 << " - rot_speed1: " << rot_speed1;
+    //qDebug() << "omega0: " << omega0 << " - omega1: " << omega1;
+    //qDebug() << "rot_speed0: " << rot_speed0 << " - rot_speed1: " << rot_speed1;
 
     bool ok0 = sendMotorSpeed( 0, rot_speed0 );
     bool ok1 = sendMotorSpeed( 1, rot_speed1 );

@@ -18,6 +18,7 @@ class CSettings
 {
 public:
     CSettings();
+    ~CSettings();
 
 public:
     bool saveMotorParams(int cpr, double ratio, double wheel_rad_mm, double wheelbase_mm,

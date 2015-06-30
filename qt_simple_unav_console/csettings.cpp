@@ -15,6 +15,13 @@ CSettings::CSettings():
 
 }
 
+
+CSettings::~CSettings()
+{
+    if(mSettings)
+        delete mSettings;
+}
+
 bool CSettings::saveMotorParams(int cpr, double ratio, double wheel_rad_mm, double wheelbase_mm,
         double k_ang, double k_vel , qint8 versus_left, qint8 versus_right, quint8 enable_mode )
 {
