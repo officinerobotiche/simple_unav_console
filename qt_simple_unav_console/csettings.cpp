@@ -23,7 +23,7 @@ CSettings::~CSettings()
 }
 
 bool CSettings::saveMotorParams(int cpr, double ratio, double wheel_rad_mm, double wheelbase_mm,
-                                qint8 versus_left, qint8 versus_right, quint8 enable_mode , quint8 enc_pos)
+                                qint8 versus_left, qint8 versus_right, quint8 enable_mode , quint8 enc_pos, qint16 bridge_V)
 {
     if(!mSettings)
         return false;
@@ -38,6 +38,7 @@ bool CSettings::saveMotorParams(int cpr, double ratio, double wheel_rad_mm, doub
     mSettings->setValue( DIRECTION_R, versus_right );
     mSettings->setValue( EN_POLARITY, enable_mode );
     mSettings->setValue( ENCODER_POS, enc_pos );
+    mSettings->setValue( BRIDGE_V, bridge_V );
 
     mSettings->endGroup();
     mSettings->sync();
@@ -46,7 +47,7 @@ bool CSettings::saveMotorParams(int cpr, double ratio, double wheel_rad_mm, doub
 }
 
 bool CSettings::loadMotorParams(int& cpr, double &ratio, double &wheel_rad_mm, double &wheelbase_mm, qint8& versus_left, qint8& versus_right,
-                                quint8& enable_mode , quint8& enc_pos )
+                                quint8& enable_mode , quint8& enc_pos, qint16 bridge_V )
 {
     if(!mSettings)
         return false;
@@ -61,6 +62,7 @@ bool CSettings::loadMotorParams(int& cpr, double &ratio, double &wheel_rad_mm, d
     versus_right = mSettings->value( DIRECTION_R, "-1" ).toInt();
     enable_mode = mSettings->value( EN_POLARITY, "0" ).toInt();
     enc_pos = mSettings->value( ENCODER_POS, "1").toInt(); // 0->After Gear; 1->Before gear
+    bridge_V = mSettings->value( BRIDGE_V, "12000" ).toInt();
 
     mSettings->setValue( ENCODER_CPR, cpr );
     mSettings->setValue( MOTOR_RATIO, ratio );
@@ -70,6 +72,7 @@ bool CSettings::loadMotorParams(int& cpr, double &ratio, double &wheel_rad_mm, d
     mSettings->setValue( DIRECTION_R, versus_right );
     mSettings->setValue( EN_POLARITY, enable_mode );
     mSettings->setValue( ENCODER_POS, enc_pos );
+    mSettings->setValue( BRIDGE_V, bridge_V );
 
     mSettings->endGroup();
 

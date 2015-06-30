@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "robotparamscalculatedialog.h"
 
 #include <string>
 
@@ -63,13 +64,13 @@ void MainWindow::on_actionParameters_triggered()
         return;
 
     // Params update
-    g_settings->loadMotorParams( _cpr, _ratio, _wheel_rad_mm, _wheel_base_mm, _k_ang, _k_vel,
-                                _versus_left, _versus_right, _enable_mode  );
+    g_settings->loadMotorParams( _cpr, _ratio, _wheel_rad_mm, _wheel_base_mm,
+                                 _versus_left, _versus_right, _enable_mode, _enc_pos, _bridge_V );
 
-    sendMotorParams( 0, _k_vel, _k_ang, _versus_left, _enable_mode );
+    sendMotorParams( 0, _cpr, _ratio, _versus_left, _enable_mode, _enc_pos, _bridge_V );
     // TODO error handling
 
-    sendMotorParams( 1, _k_vel, _k_ang, _versus_right, _enable_mode );
+    sendMotorParams( 1, _cpr, _ratio, _versus_right, _enable_mode, _enc_pos, _bridge_V );
     // TODO error handling
 
 
@@ -77,7 +78,7 @@ void MainWindow::on_actionParameters_triggered()
 }
 
 bool MainWindow::sendMotorParams(quint8 motIdx, quint16 cpr, float ratio,
-                                 qint8 versus, quint8 enable_mode )
+                                 qint8 versus, quint8 enable_mode, quint8 enc_pos, qint16 bridge_volt )
 {
     if( !_uNav )
         return false;
@@ -87,27 +88,27 @@ bool MainWindow::sendMotorParams(quint8 motIdx, quint16 cpr, float ratio,
 
     try
     {
-        parameter_motor_t param;
-        param.enable_set = enable_mode;
-        param.k_ang = ratio;
-        param.k_vel = cpr;
-        param.versus = versus;
-
         motor_parameter_t param;
-            param.encoder.cpr = cpr;
-            param.bridge.enable = enable_mode;
-            param.encoder.position = (uint8_t) config.Encoder;
-            param.ratio = ratio;
-            param.rotation = versus;
-            param.bridge.volt = (int16_t) (config.Bridge*1000);
+        param.encoder.cpr = cpr;
+        param.bridge.enable = enable_mode;
+        param.encoder.position = enc_pos;
+        param.ratio = ratio;
+        param.rotation = versus;
+        param.bridge.volt = bridge_volt;
 
-        quint8 command;
-        if(motIdx==0)
-            command = PARAMETER_MOTOR_L;
-        else
-            command = PARAMETER_MOTOR_R;
+        motor_command_map_t command;
+        command.bitset.motor = motIdx;
+        command.bitset.command = MOTOR_PARAMETER;
 
-        _uNav->parserSendPacket(_uNav->createDataPacket(command, HASHMAP_MOTION, (abstract_message_u*) & param), 3, boost::posix_time::millisec(200));
+        packet_t packet_send = _uNav->encoder(_uNav->createDataPacket(command.command_message, HASHMAP_MOTOR, (message_abstract_u*) &param));
+        try {
+            _uNav->sendSyncPacket(packet_send, 3, boost::posix_time::millisec(200));
+        }
+        catch (exception &e)
+        {
+            // TODO insert message box
+            qDebug() << tr("Error sending Motor parameters: %1").arg( e.what() );
+        }
     }
     catch( parser_exception& e)
     {
@@ -307,11 +308,14 @@ bool MainWindow::connectSerial()
     // <<<<< Start timers
 
     // >>>>> Robot params updating
-    g_settings->loadMotorParams( _cpr, _ratio, _wheel_rad_mm, _wheel_base_mm, _k_ang, _k_vel,
-                                _versus_left, _versus_right, _enable_mode  );
+    g_settings->loadMotorParams( _cpr, _ratio, _wheel_rad_mm, _wheel_base_mm,
+                                 _versus_left, _versus_right, _enable_mode, _enc_pos, _bridge_V );
 
-    sendMotorParams( 0, _k_vel, _k_ang, _versus_left, _enable_mode );
-    sendMotorParams( 1, _k_vel, _k_ang, _versus_right, _enable_mode );
+    sendMotorParams( 0, _cpr, _ratio, _versus_left, _enable_mode, _enc_pos, _bridge_V );
+    // TODO error handling
+
+    sendMotorParams( 1, _cpr, _ratio, _versus_right, _enable_mode, _enc_pos, _bridge_V );
+    // TODO error handling
     // <<<<< Robot params updating
 
     sendEnable( 0, true );
@@ -616,19 +620,24 @@ bool MainWindow::sendPIDGains( quint8 motorIdx, double kp, double ki, double kd 
 
     try
     {
-        pid_control_t pid;
+        motor_pid_t pid;
         pid.kp = kp;
         pid.ki = ki;
         pid.kd = kd;
 
-        quint8 command;
-        if(motorIdx==0)
-            command = PID_CONTROL_L;
-        else
-            command = PID_CONTROL_R;
+        motor_command_map_t command;
+        command.bitset.motor = motorIdx;
+        command.bitset.command = MOTOR_VEL_PID;
 
-
-        _uNav->parserSendPacket(_uNav->createDataPacket( command, HASHMAP_MOTION, (abstract_message_u*) & pid), 3, boost::posix_time::millisec(200));
+        packet_t packet_send = _uNav->encoder(_uNav->createDataPacket(command.command_message, HASHMAP_MOTOR, (message_abstract_u*) &pid));
+        try {
+            _uNav->sendSyncPacket(packet_send, 3, boost::posix_time::millisec(200));
+        }
+        catch (exception &e)
+        {
+            // TODO insert message box
+            qDebug() << tr("Error sending Motor parameters: %1").arg( e.what() );
+        }
     }
     catch( parser_exception& e)
     {

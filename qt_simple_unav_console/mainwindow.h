@@ -36,7 +36,7 @@ protected:
     bool getMotorStatus(quint8 motIdx); ///< Retrieve the status of the motor
 
     bool sendMotorParams(quint8 motIdx, quint16 cpr, float ratio,
-                         qint8 versus, quint8 enable_mode );
+                         qint8 versus, quint8 enable_mode , quint8 enc_pos, qint16 bridge_volt);
 
 private:
     void updateSerialPortList();
@@ -71,11 +71,11 @@ private:
     double _ratio;
     double _wheel_rad_mm;
     double _wheel_base_mm;
-    double _k_ang;
-    double _k_vel;
     qint8 _versus_left;
     qint8 _versus_right;
     quint8 _enable_mode;
+    quint8 _enc_pos;
+    qint16 _bridge_V;
 
     double _current_value_0;
     double _current_setPoint_0;

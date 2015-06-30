@@ -15,25 +15,18 @@ public:
     explicit RobotParamsCalculateDialog(QWidget *parent = 0);
     ~RobotParamsCalculateDialog();
 
-    bool getParams(double &k_ang, double &k_vel , qint8 &versus_left, qint8 &versus_right, quint8 &enable_mode);
+    bool getParams(float& wheel_radius, float& wheel_base, float& ratio,
+                   qint8& versus_left, qint8 &versus_right, quint8& enable_mode , quint8 &enc_pos, qint16 &bridge_V);
 
 private slots:
-    void on_pushButton_clicked();
-
     void on_buttonBox_accepted();
-
     void on_lineEdit_enc_cpr_textEdited(const QString &arg1);
-
     void on_lineEdit_motor_ratio_textEdited(const QString &arg1);
 
 
 
 private:
     Ui::RobotParamsCalculateDialog *ui;
-
-    double _k_ang;
-    double _k_vel;
-    bool _calculated;
 };
 
 #endif // ROBOTPARAMSCALCULATEDIALOG_H

@@ -12,6 +12,7 @@
 #define DIRECTION_L "direction_left"
 #define DIRECTION_R "direction_right"
 #define ENCODER_POS "encoder_pos"
+#define BRIDGE_V    "bridge_v"
 
 class CSettings
 {
@@ -21,10 +22,10 @@ public:
 
 public:
     bool saveMotorParams(int cpr, double ratio, double wheel_rad_mm, double wheelbase_mm,
-                         qint8 versus_left, qint8 versus_right, quint8 enable_mode, quint8 enc_pos );
+                         qint8 versus_left, qint8 versus_right, quint8 enable_mode, quint8 enc_pos, qint16 bridge_V );
     bool loadMotorParams(int& cpr, double &ratio, double &wheel_rad_mm, double &wheelbase_mm,
                          qint8& versus_left, qint8& versus_right,
-                          quint8& enable_mode , quint8& enc_pos );
+                          quint8& enable_mode , quint8& enc_pos , qint16 bridge_V);
 
 
 private:
