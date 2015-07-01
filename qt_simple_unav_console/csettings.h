@@ -25,7 +25,7 @@ public:
                          qint8 versus_left, qint8 versus_right, quint8 enable_mode, quint8 enc_pos, qint16 bridge_V );
     bool loadMotorParams(int& cpr, double &ratio, double &wheel_rad_mm, double &wheelbase_mm,
                          qint8& versus_left, qint8& versus_right,
-                          quint8& enable_mode , quint8& enc_pos , qint16 bridge_V);
+                          quint8& enable_mode , quint8& enc_pos , qint16 &bridge_V);
 
 
 private:

@@ -33,7 +33,9 @@ protected:
 
     bool sendPIDGains( quint8 motorIdx, double kp, double ki, double kd );
 
-    bool getMotorStatus(quint8 motIdx); ///< Retrieve the status of the motor
+    bool getMotorSpeed(quint8 motIdx); ///< Retrieve the speed of the motor
+
+    bool getMotorSpeeds(); ///< Retrieve the speed of both motors
 
     bool sendMotorParams(quint8 motIdx, quint16 cpr, float ratio,
                          qint8 versus, quint8 enable_mode , quint8 enc_pos, qint16 bridge_volt);

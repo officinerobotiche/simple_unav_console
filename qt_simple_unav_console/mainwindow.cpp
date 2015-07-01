@@ -298,7 +298,7 @@ bool MainWindow::connectSerial()
 
     // >>>>> Start timers
     _commandSendTimer.start( CMD_SEND_PERIOD );
-    //_statusUpdateTimer.start( STATUS_UPDATE_PERIOD );
+    _statusUpdateTimer.start( STATUS_UPDATE_PERIOD );
     // <<<<< Start timers
 
     // >>>>> Robot params updating
@@ -312,11 +312,13 @@ bool MainWindow::connectSerial()
     // TODO error handling
     // <<<<< Robot params updating
 
-    //sendEnable( 0, true );
-    //sendEnable( 1, true );
+    sendEnable( 0, true );
+    sendEnable( 1, true );
 
     sendPIDGains( 0, 0.05, 0.2, 0.45 );
     sendPIDGains( 1, 0.05, 0.2, 0.45 );
+
+
 
     return true;
 }
@@ -394,8 +396,8 @@ void MainWindow::onNewJoypadValues(float X, float Y)
 
 void MainWindow::onStatusTimerTimeout()
 {
-    bool ok0 = getMotorStatus( 0 );
-    bool ok1 = getMotorStatus( 1 );
+    bool ok0 = getMotorSpeed( 0 );
+    bool ok1 = getMotorSpeed( 1 );
 
     if( !ok0 || !ok1 )
         return;
@@ -444,8 +446,8 @@ bool MainWindow::sendRobotSpeeds( double fwSpeed, double rotSpeed )
 
     double rad = rotSpeed*DEG2RAD;
 
-    omega0 = (2.0*fwSpeed-rad*L)/(2.0*wheel_rad_m);
-    omega1 = (2.0*fwSpeed+rad*L)/(2.0*wheel_rad_m);
+    omega0 = (2.0*fwSpeed+rad*L)/(2.0*wheel_rad_m);
+    omega1 = (2.0*fwSpeed-rad*L)/(2.0*wheel_rad_m);
 
     if( omega0 > 32.0 )
         omega0 = 32.0;
@@ -478,7 +480,12 @@ bool MainWindow::stopMotor( quint8 motorIdx )
     return sendMotorSpeed( motorIdx, 0 );
 }
 
-bool MainWindow::getMotorStatus(quint8 motIdx)
+bool MainWindow::getMotorSpeeds()
+{
+
+}
+
+bool MainWindow::getMotorSpeed(quint8 motIdx)
 {
     //if( !_connected )
     //    return false;
@@ -486,12 +493,12 @@ bool MainWindow::getMotorStatus(quint8 motIdx)
     try
     {
         motor_command_map_t command;
-        command.bitset.command = MOTOR_MEASURE;
 
+        command.bitset.command = MOTOR_MEASURE;
         command.bitset.motor = motIdx;
 
-        packet_t packet_send = _uNav->encoder(_uNav->createPacket(command.command_message, PACKET_REQUEST, HASHMAP_MOTOR ) );
-        packet_t received = _uNav->sendSyncPacket( packet_send, 3, boost::posix_time::millisec(200) );
+        packet_information_t send = _uNav->createPacket( command.command_message, PACKET_REQUEST, HASHMAP_MOTION);
+        packet_t received = _uNav->sendSyncPacket( _uNav->encoder(send), 3, boost::posix_time::millisec(200) );
 
         // parse packet
         vector<packet_information_t> list = _uNav->parsing(received);
