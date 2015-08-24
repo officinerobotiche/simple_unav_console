@@ -27,6 +27,8 @@ private slots:
 
 private:
     Ui::RobotParamsCalculateDialog *ui;
+
+
 };
 
 #endif // ROBOTPARAMSCALCULATEDIALOG_H

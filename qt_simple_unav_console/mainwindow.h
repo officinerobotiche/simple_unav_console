@@ -4,7 +4,8 @@
 #include <QMainWindow>
 #include <QTimer>
 
-#include <serial_parser_packet/ParserPacket.h>
+#include "OrblibcppInterface/orblibcppinterface.h"
+
 
 namespace Ui {
 class MainWindow;
@@ -27,18 +28,10 @@ protected:
 
     bool sendRobotSpeeds(double fwSpeed, double rotSpeed );
 
-    bool sendMotorSpeed( quint8 motorIdx, int16_t speed ); ///< Send motor speed in rad/sec
     bool sendMotorSpeeds( int16_t speed0, int16_t speed1 ); ///< Send motor speeds in rad/sec
     bool stopMotor( quint8 motorIdx ); ///< Stops a motor
 
-    bool sendPIDGains( quint8 motorIdx, double kp, double ki, double kd );
-
-    bool getMotorSpeed(quint8 motIdx); ///< Retrieve the speed of the motor
-
     bool getMotorSpeeds(); ///< Retrieve the speed of both motors
-
-    bool sendMotorParams(quint8 motIdx, quint16 cpr, float ratio,
-                         qint8 versus, quint8 enable_mode , quint8 enc_pos, qint16 bridge_volt);
 
 private:
     void updateSerialPortList();
@@ -59,7 +52,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
 
-    ParserPacket* _uNav; ///< uNav communication object
+    OrblibcppInterface* _uNavComm;
 
     QTimer _statusUpdateTimer;  ///< Timer to retrieve the status of the motors from uNav
     QTimer _commandSendTimer;   ///< Timer to send speed command to uNav

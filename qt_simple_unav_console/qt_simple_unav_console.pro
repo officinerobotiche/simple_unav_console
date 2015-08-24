@@ -19,13 +19,15 @@ SOURCES += \
     mainwindow.cpp \
     joypad/qjoypad.cpp \
     csettings.cpp \
-    robotparamscalculatedialog.cpp
+    robotparamscalculatedialog.cpp \
+    OrblibcppInterface/orblibcppinterface.cpp
 
 HEADERS  += \
     mainwindow.h \
     joypad/qjoypad.h \
     csettings.h \
-    robotparamscalculatedialog.h
+    robotparamscalculatedialog.h \
+    OrblibcppInterface/orblibcppinterface.h
 
 FORMS    += mainwindow.ui \
     robotparamscalculatedialog.ui
