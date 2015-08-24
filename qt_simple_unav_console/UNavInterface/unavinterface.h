@@ -1,16 +1,16 @@
-#ifndef ORBLIBCPPINTERFACE_H
-#define ORBLIBCPPINTERFACE_H
+#ifndef UNAVINTERFACE_H
+#define UNAVINTERFACE_H
 
 #include <serial_parser_packet/ParserPacket.h>
 #include <string>
 
 using namespace std;
 
-class OrblibcppInterface
+class UNavInterface
 {
 public:
-    OrblibcppInterface();
-    ~OrblibcppInterface();
+    UNavInterface();
+    ~UNavInterface();
 
     bool connect(  const string& devname, unsigned int baud_rate );
     void disconnect();
@@ -35,4 +35,4 @@ private:
 
 };
 
-#endif // ORBLIBCPPINTERFACE_H
+#endif // UNAVINTERFACE_H

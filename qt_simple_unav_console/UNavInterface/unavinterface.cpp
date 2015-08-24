@@ -1,14 +1,14 @@
-#include "orblibcppinterface.h"
+#include "unavinterface.h"
 
 #include <stdio.h>
 
-OrblibcppInterface::OrblibcppInterface()
+UNavInterface::UNavInterface()
     : _uNav(NULL)
 {
 
 }
 
-OrblibcppInterface::~OrblibcppInterface()
+UNavInterface::~UNavInterface()
 {
     if(_uNav)
     {
@@ -17,7 +17,7 @@ OrblibcppInterface::~OrblibcppInterface()
     }
 }
 
-bool OrblibcppInterface::connect( const std::string& devname, unsigned int baud_rate )
+bool UNavInterface::connect( const std::string& devname, unsigned int baud_rate )
 {
     if(_uNav)
     {
@@ -52,7 +52,7 @@ bool OrblibcppInterface::connect( const std::string& devname, unsigned int baud_
     return true;
 }
 
-void OrblibcppInterface::disconnect()
+void UNavInterface::disconnect()
 {
     if( _uNav )
         delete _uNav;
@@ -60,8 +60,9 @@ void OrblibcppInterface::disconnect()
     _uNav = NULL;
 }
 
-bool OrblibcppInterface::sendMotorParams(uint8_t motIdx, uint16_t cpr, float ratio,
-                                         int8_t versus, uint8_t enable_mode, uint8_t enc_pos, int16_t bridge_volt )
+bool UNavInterface::sendMotorParams(uint8_t motIdx, uint16_t cpr, float ratio,
+                                    int8_t versus, uint8_t enable_mode, uint8_t enc_pos,
+                                    int16_t bridge_volt )
 {
     if( !_uNav )
         return false;
@@ -111,7 +112,7 @@ bool OrblibcppInterface::sendMotorParams(uint8_t motIdx, uint16_t cpr, float rat
     return true;
 }
 
-bool OrblibcppInterface::enableSpeedControl(uint8_t motIdx, bool enable )
+bool UNavInterface::enableSpeedControl(uint8_t motIdx, bool enable )
 {
     try
     {
@@ -147,7 +148,7 @@ bool OrblibcppInterface::enableSpeedControl(uint8_t motIdx, bool enable )
     return true;
 }
 
-bool OrblibcppInterface::getMotorSpeed( uint8_t motIdx, double& outSpeed )
+bool UNavInterface::getMotorSpeed( uint8_t motIdx, double& outSpeed )
 {
     try
     {
@@ -218,7 +219,7 @@ bool OrblibcppInterface::getMotorSpeed( uint8_t motIdx, double& outSpeed )
     return true;
 }
 
-bool OrblibcppInterface::sendMotorSpeed( uint8_t motorIdx, int16_t speed )
+bool UNavInterface::sendMotorSpeed( uint8_t motorIdx, int16_t speed )
 {
 
     try
@@ -256,7 +257,7 @@ bool OrblibcppInterface::sendMotorSpeed( uint8_t motorIdx, int16_t speed )
     return true;
 }
 
-bool OrblibcppInterface::sendPIDGains( uint8_t motorIdx, double kp, double ki, double kd )
+bool UNavInterface::sendPIDGains( uint8_t motorIdx, double kp, double ki, double kd )
 {
     try
     {

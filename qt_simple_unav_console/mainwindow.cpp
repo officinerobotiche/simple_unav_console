@@ -194,7 +194,7 @@ bool MainWindow::connectSerial()
 
     string serialPort = ui->comboBox_serial_port->currentText().toStdString();
 
-    _uNavComm = new OrblibcppInterface();
+    _uNavComm = new UNavInterface();
 
     if( !_uNavComm->connect( serialPort, 115200 ) )
         return false;

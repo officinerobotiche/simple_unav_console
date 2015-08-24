@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QTimer>
 
-#include "OrblibcppInterface/orblibcppinterface.h"
+#include "UNavInterface/unavinterface.h"
 
 
 namespace Ui {
@@ -52,7 +52,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
 
-    OrblibcppInterface* _uNavComm;
+    UNavInterface* _uNavComm;
 
     QTimer _statusUpdateTimer;  ///< Timer to retrieve the status of the motors from uNav
     QTimer _commandSendTimer;   ///< Timer to send speed command to uNav
