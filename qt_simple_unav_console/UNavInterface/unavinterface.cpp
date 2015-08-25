@@ -157,7 +157,7 @@ bool UNavInterface::getMotorSpeed( uint8_t motIdx, double& outSpeed )
         command.bitset.command = MOTOR_MEASURE;
         command.bitset.motor = motIdx;
 
-        packet_information_t send = _uNav->createPacket( command.command_message, PACKET_REQUEST, HASHMAP_MOTION);
+        packet_information_t send = _uNav->createPacket( command.command_message, PACKET_REQUEST, HASHMAP_MOTOR);
         packet_t received = _uNav->sendSyncPacket( _uNav->encoder(send), 3, boost::posix_time::millisec(200) );
 
         // parse packet
@@ -168,7 +168,7 @@ bool UNavInterface::getMotorSpeed( uint8_t motIdx, double& outSpeed )
 
         if(first.option == PACKET_DATA)
         {
-            if(first.type == HASHMAP_MOTION)
+            if(first.type == HASHMAP_MOTOR)
             {
                 motor_t motor0, motor1;
                 motor_command_map_t command;
