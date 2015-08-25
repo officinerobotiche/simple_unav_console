@@ -28,7 +28,6 @@ bool UNavInterface::connect( const std::string& devname, unsigned int baud_rate 
     try
     {
         _uNav = new ParserPacket( devname, baud_rate );
-
     }
     catch( parser_exception& e)
     {

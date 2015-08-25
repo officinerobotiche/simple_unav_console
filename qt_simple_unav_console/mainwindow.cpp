@@ -213,27 +213,33 @@ bool MainWindow::connectSerial()
              this, SLOT(onStatusTimerTimeout()) );
     // <<<<< Qt signals connecting
 
-    // >>>>> Start timers
-    _commandSendTimer.start( CMD_SEND_PERIOD );
-    _statusUpdateTimer.start( STATUS_UPDATE_PERIOD );
-    // <<<<< Start timers
-
     // >>>>> Robot params updating
     g_settings->loadMotorParams( _cpr, _ratio, _wheel_rad_mm, _wheel_base_mm,
                                  _versus_left, _versus_right, _enable_mode, _enc_pos, _bridge_V );
 
-    _uNavComm->sendMotorParams( 0, _cpr, _ratio, _versus_left, _enable_mode, _enc_pos, _bridge_V );
+    if( !_uNavComm->sendMotorParams( 0, _cpr, _ratio, _versus_left, _enable_mode, _enc_pos, _bridge_V ) )
+        return false;
     // TODO error handling
 
-    _uNavComm->sendMotorParams( 1, _cpr, _ratio, _versus_right, _enable_mode, _enc_pos, _bridge_V );
+    if( !_uNavComm->sendMotorParams( 1, _cpr, _ratio, _versus_right, _enable_mode, _enc_pos, _bridge_V ) )
+        return false;
     // TODO error handling
     // <<<<< Robot params updating
 
-    _uNavComm->enableSpeedControl( 0, true );
-    _uNavComm->enableSpeedControl( 1, true );
+    if( !_uNavComm->enableSpeedControl( 0, true ) )
+        return false;
+    if( !_uNavComm->enableSpeedControl( 1, true ) )
+        return false;
 
-    _uNavComm->sendPIDGains( 0, 0.05, 0.2, 0.45 );
-    _uNavComm->sendPIDGains( 1, 0.05, 0.2, 0.45 );
+    if( !_uNavComm->sendPIDGains( 0, 0.05, 0.2, 0.45 ) )
+        return false;
+    if( !_uNavComm->sendPIDGains( 1, 0.05, 0.2, 0.45 ) )
+        return false;
+
+    // >>>>> Start timers
+    _commandSendTimer.start( CMD_SEND_PERIOD );
+    _statusUpdateTimer.start( STATUS_UPDATE_PERIOD );
+    // <<<<< Start timers
 
     return true;
 }
