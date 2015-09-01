@@ -1,7 +1,7 @@
 # simple_unav_console
-A simple "virtual joypad" in Qt to control motors connected to a uNav board
+A simple "virtual joypad" in Qt to control motors connected to a µNav board
 
-This demo is useful to understand how to use "orblibcpp" [https://github.com/officinerobotiche/orblibcpp] library to communicate with uNav and to send velocity commands.
+This demo is useful to understand how to use "orblibcpp" [https://github.com/officinerobotiche/orblibcpp] library to communicate with µNav and to send velocity commands.
 
 ## Usage
 ```
