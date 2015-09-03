@@ -72,8 +72,11 @@ private:
     quint8 _enc_pos;
     qint16 _bridge_V;
 
-    double _current_vel_0;
-    double _current_vel_1;
+    QVector <double> _vel_vec_0;
+    QVector <double> _vel_vec_1;
+    int _vel_idx;
+    int _vel_count;
 };
 
 #endif // MAINWINDOW_H
+

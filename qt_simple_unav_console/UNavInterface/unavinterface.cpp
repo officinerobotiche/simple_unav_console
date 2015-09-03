@@ -2,6 +2,10 @@
 
 #include <stdio.h>
 
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/thread/thread.hpp>
+
+
 UNavInterface::UNavInterface()
     : _uNav(NULL)
 {
@@ -106,7 +110,9 @@ bool UNavInterface::sendMotorParams(uint8_t motIdx, uint16_t cpr, float ratio,
         return false;
     }
 
-    sleep(1);
+    //sleep(1);
+
+    boost::this_thread::sleep( boost::posix_time::milliseconds(1000) );
 
     return true;
 }
@@ -261,9 +267,9 @@ bool UNavInterface::sendPIDGains( uint8_t motorIdx, double kp, double ki, double
     try
     {
         motor_pid_t pid;
-        pid.kp = kp;
-        pid.ki = ki;
-        pid.kd = kd;
+        pid.kp = (float)kp;
+        pid.ki = (float)ki;
+        pid.kd = (float)kd;
 
         motor_command_map_t command;
         command.bitset.motor = motorIdx;
