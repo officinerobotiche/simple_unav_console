@@ -294,6 +294,9 @@ void MainWindow::onStatusTimerTimeout()
     if( !ok0 || !ok1 )
         return;
 
+    qDebug() << tr("Motor 0: %1").arg(vel0);
+    qDebug() << tr("Motor 1: %1").arg(vel1);
+
     // >>>>> Averaging
     double mean_vel_0, mean_vel_1;
 
