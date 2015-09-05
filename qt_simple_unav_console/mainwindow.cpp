@@ -387,10 +387,12 @@ bool MainWindow::sendRobotSpeeds( double fwSpeed, double rotSpeed )
     //qDebug() << "omega0: " << omega0 << " - omega1: " << omega1;
     //qDebug() << "rot_speed0: " << rot_speed0 << " - rot_speed1: " << rot_speed1;
 
-    bool ok0 = _uNavComm->sendMotorSpeed( 0, rot_speed0 );
+    /*bool ok0 = _uNavComm->sendMotorSpeed( 0, rot_speed0 );
     bool ok1 = _uNavComm->sendMotorSpeed( 1, rot_speed1 );
 
-    return (ok0 & ok1);
+    return (ok0 & ok1); */
+
+    return _uNavComm->sendMotorSpeeds( rot_speed0, rot_speed1 );
 }
 
 bool MainWindow::stopMotor( quint8 motorIdx )

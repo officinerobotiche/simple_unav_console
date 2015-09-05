@@ -226,16 +226,65 @@ bool UNavInterface::getMotorSpeed( uint8_t motIdx, double& outSpeed )
 
 bool UNavInterface::sendMotorSpeed( uint8_t motorIdx, int16_t speed )
 {
+    motor_command_map_t command;
+    command.bitset.motor = motorIdx;
+    command.bitset.command = MOTOR_VEL_REF;
+
+    packet_t packet_send = _uNav->encoder(_uNav->createDataPacket(command.command_message, HASHMAP_MOTOR, (message_abstract_u*) &speed));
 
     try
     {
-        motor_command_map_t command;
-        command.bitset.motor = motorIdx;
-        command.bitset.command = MOTOR_VEL_REF;
-
-        packet_t packet_send = _uNav->encoder(_uNav->createDataPacket(command.command_message, HASHMAP_MOTOR, (message_abstract_u*) &speed));
-
         _uNav->sendSyncPacket(packet_send, 3, boost::posix_time::millisec(200));
+    }
+    catch( parser_exception& e)
+    {
+        cout << "Serial error: " << e.what() << endl;
+
+        throw e;
+        return false;
+    }
+    catch( boost::system::system_error& e)
+    {
+        cout << "Serial error: " << e.what() << endl;
+
+        throw e;
+        return false;
+    }
+    catch(...)
+    {
+        cout << "Serial error: Unknown error";
+
+        throw;
+        return false;
+    }
+
+    return true;
+}
+
+bool UNavInterface::sendMotorSpeeds( int16_t speed_0, int16_t speed_1 )
+{
+    vector<packet_information_t> packet_list;
+
+    motor_command_map_t motor_command_;
+    motor_command_.bitset.command = MOTOR_VEL_REF; ///< Set command to velocity control
+
+    //Build a command message
+    motor_command_.bitset.motor = 0;
+    packet_list.push_back(
+                _uNav->createDataPacket(motor_command_.command_message,
+                                        HASHMAP_MOTOR,
+                                        (message_abstract_u*) &speed_0) );
+
+    //Build a command message
+    motor_command_.bitset.motor = 1;
+    packet_list.push_back(
+                _uNav->createDataPacket(motor_command_.command_message,
+                                        HASHMAP_MOTOR,
+                                        (message_abstract_u*) &speed_1) );
+
+    try
+    {
+        _uNav->parserSendPacket(packet_list, 3, boost::posix_time::millisec(200));
     }
     catch( parser_exception& e)
     {

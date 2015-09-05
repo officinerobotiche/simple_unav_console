@@ -21,6 +21,7 @@ public:
     bool sendPIDGains( uint8_t motorIdx, double kp, double ki, double kd );
 
     bool sendMotorSpeed( uint8_t motorIdx, int16_t speed );
+    bool sendMotorSpeeds( int16_t speed_0, int16_t speed_1 );
 
     bool enableSpeedControl(uint8_t motIdx, bool enable );
 
