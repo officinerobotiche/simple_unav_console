@@ -18,7 +18,7 @@
 using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),    
+    QMainWindow(parent),
     ui(new Ui::MainWindow),
     _uNavComm(NULL)
 {
@@ -74,31 +74,10 @@ void MainWindow::on_pushButton_connect_clicked(bool checked)
 {
     if( checked )
     {
-        try
-        {
-            if( !connectSerial() )
-            {
-                ui->pushButton_connect->setChecked(false);
-                QMessageBox::warning( this, tr("Error"), tr("Please verify the correctness of the connection to the board") );
-                return;
-            }
-        }
-        catch( parser_exception& e)
+        if( !connectSerial() )
         {
             ui->pushButton_connect->setChecked(false);
-            QMessageBox::warning( this, tr("Connection error"), e.what() );
-            return;
-        }
-        catch( boost::system::system_error& e)
-        {
-            ui->pushButton_connect->setChecked(false);
-            QMessageBox::warning( this, tr("Connection error"), e.what() );
-            return;
-        }
-        catch(...)
-        {
-            ui->pushButton_connect->setChecked(false);
-            QMessageBox::warning( this, tr("Connection error"), tr("Unknown error") );
+            QMessageBox::warning( this, tr("Connection error"), tr("Please verify the correctness of the connection to the board") );
             return;
         }
 

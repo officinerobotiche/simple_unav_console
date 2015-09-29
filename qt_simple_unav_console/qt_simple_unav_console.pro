@@ -19,15 +19,13 @@ SOURCES += \
     mainwindow.cpp \
     joypad/qjoypad.cpp \
     csettings.cpp \
-    robotparamscalculatedialog.cpp \
-    UNavInterface/unavinterface.cpp
+    robotparamscalculatedialog.cpp
 
 HEADERS  += \
     mainwindow.h \
     joypad/qjoypad.h \
     csettings.h \
-    robotparamscalculatedialog.h \
-    UNavInterface/unavinterface.h
+    robotparamscalculatedialog.h
 
 FORMS    += mainwindow.ui \
     robotparamscalculatedialog.ui

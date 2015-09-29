@@ -4,8 +4,7 @@
 #include <QMainWindow>
 #include <QTimer>
 
-#include "UNavInterface/unavinterface.h"
-
+#include "interface/unavinterface.h"
 
 namespace Ui {
 class MainWindow;
