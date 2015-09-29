@@ -264,7 +264,7 @@
       <item>
        <widget class="QRadioButton" name="radioButton_enc_wheel">
         <property name="text">
-         <string>Motor Shaft</string>
+         <string>Wheel Shaft</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -274,7 +274,7 @@
       <item>
        <widget class="QRadioButton" name="radioButton_enc_shaft">
         <property name="text">
-         <string>Wheel Shaft</string>
+         <string>Motor Shaft</string>
         </property>
        </widget>
       </item>

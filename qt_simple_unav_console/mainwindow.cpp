@@ -15,6 +15,8 @@
 #define RAD2DEG 57.29577951308233
 #define DEG2RAD 0.017453293
 
+#define MEAN_COUNT 10 // Number of values of speed to be averaged
+
 using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -23,6 +25,10 @@ MainWindow::MainWindow(QWidget *parent) :
     _uNavComm(NULL)
 {
     ui->setupUi(this);
+
+    _vel_idx = 0;
+    _vel_vec_0.resize(MEAN_COUNT);
+    _vel_vec_1.resize(MEAN_COUNT);
 
     updateSerialPortList();
 }
@@ -259,17 +265,48 @@ void MainWindow::onStatusTimerTimeout()
     if( !_uNavComm )
         return;
 
-    bool ok0 = _uNavComm->getMotorSpeed( 0, _current_vel_0 );
-    bool ok1 = _uNavComm->getMotorSpeed( 1, _current_vel_1 );
+    double vel0,vel1;
+
+    bool ok0 = _uNavComm->getMotorSpeed( 0, vel0 );
+    bool ok1 = _uNavComm->getMotorSpeed( 1, vel1 );
 
     if( !ok0 || !ok1 )
         return;
 
+    qDebug() << tr("Motor 0: %1").arg(vel0);
+    qDebug() << tr("Motor 1: %1").arg(vel1);
+
+    // >>>>> Averaging
+    double mean_vel_0, mean_vel_1;
+
+    _vel_vec_0[_vel_idx] = vel0;
+    _vel_vec_1[_vel_idx] = vel1;
+    _vel_idx++;
+    _vel_count++;
+
+    int stop_idx;
+
+    stop_idx = qMin( MEAN_COUNT, _vel_idx );
+
+    double sum0=0.0;
+    double sum1=0.0;
+
+    for( int i=0; i<stop_idx; i++)
+    {
+        sum0+=_vel_vec_0[i];
+        sum1+=_vel_vec_1[i];
+    }
+    mean_vel_0 = sum0/stop_idx;
+    mean_vel_1 = sum1/stop_idx;
+
+    _vel_idx %= MEAN_COUNT;
+    // <<<<< Averaging
+
     double wheel_rad_m = _wheel_rad_mm/1000.0;
     double L = _wheel_base_mm/1000.0;
 
-    double robot_speed_fw = 0.5*(_current_vel_0 + _current_vel_1)*wheel_rad_m;
-    double robot_speed_rot = (_current_vel_0 - _current_vel_1)*wheel_rad_m/L;
+    double robot_speed_fw = 0.5*(mean_vel_0 + mean_vel_1)*wheel_rad_m;
+    double robot_speed_rot = (mean_vel_0 - mean_vel_1)*wheel_rad_m/L;
 
     ui->lcdNumber_fw_speed->display(robot_speed_fw);
     ui->lcdNumber_rot_speed->display(robot_speed_rot*RAD2DEG);
@@ -329,10 +366,12 @@ bool MainWindow::sendRobotSpeeds( double fwSpeed, double rotSpeed )
     //qDebug() << "omega0: " << omega0 << " - omega1: " << omega1;
     //qDebug() << "rot_speed0: " << rot_speed0 << " - rot_speed1: " << rot_speed1;
 
-    bool ok0 = _uNavComm->sendMotorSpeed( 0, rot_speed0 );
+    /*bool ok0 = _uNavComm->sendMotorSpeed( 0, rot_speed0 );
     bool ok1 = _uNavComm->sendMotorSpeed( 1, rot_speed1 );
 
-    return (ok0 & ok1);
+    return (ok0 & ok1); */
+
+    return _uNavComm->sendMotorSpeeds( rot_speed0, rot_speed1 );
 }
 
 bool MainWindow::stopMotor( quint8 motorIdx )

@@ -36,7 +36,7 @@ RobotParamsCalculateDialog::RobotParamsCalculateDialog(QWidget *parent) :
     ui->radioButton_enc_wheel->setChecked( enc_pos==0?true:false );
     ui->radioButton_enc_shaft->setChecked( enc_pos==1?true:false );
 
-    ui->lineEdit_bridge->setText( tr("%1").arg(bridge_V));
+    ui->lineEdit_bridge->setText( tr("%1").arg(((float)bridge_V)/1000.0f) );
 }
 
 RobotParamsCalculateDialog::~RobotParamsCalculateDialog()
@@ -59,21 +59,21 @@ bool RobotParamsCalculateDialog::getParams(float& wheel_radius, float& wheel_bas
 
     ratio = ui->lineEdit_motor_ratio->text().toFloat();
 
-    bridge_V = (int)(ui->lineEdit_bridge->text().toFloat()*1000.0f);
+    bridge_V = (qint16)(ui->lineEdit_bridge->text().toFloat()*1000.0f);
 
     return true;
 }
 
 void RobotParamsCalculateDialog::on_buttonBox_accepted()
 {
-    int versus_left = ui->checkBox_invert_mot_left->isChecked()?-1:1;
-    int versus_right = ui->checkBox_invert_mot_right->isChecked()?-1:1;
+    qint8 versus_left = ui->checkBox_invert_mot_left->isChecked()?-1:1;
+    qint8 versus_right = ui->checkBox_invert_mot_right->isChecked()?-1:1;
 
-    int enable_mode = ui->radioButton_polarity_high->isChecked()?1:0;
+    quint8 enable_mode = ui->radioButton_polarity_high->isChecked()?1:0;
 
-    int enc_pos = ui->radioButton_enc_wheel->isChecked()?0:1;
+    quint8 enc_pos = ui->radioButton_enc_wheel->isChecked()?0:1;
 
-    int bridge_v = (int)(ui->lineEdit_bridge->text().toFloat()*1000.0f);
+    qint16 bridge_v = (int)(ui->lineEdit_bridge->text().toFloat()*1000.0f);
 
     g_settings->saveMotorParams(
                 ui->lineEdit_enc_cpr->text().toInt(),
