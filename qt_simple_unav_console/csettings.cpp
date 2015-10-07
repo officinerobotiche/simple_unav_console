@@ -23,7 +23,7 @@ CSettings::~CSettings()
 }
 
 bool CSettings::saveMotorParams(int cpr, double ratio, double wheel_rad_mm, double wheelbase_mm,
-                                qint8 versus_left, qint8 versus_right, quint8 enable_mode , quint8 enc_pos, qint16 bridge_V)
+                                int versus_left, qint8 versus_right, quint8 enable_mode , quint8 enc_pos, qint16 bridge_V)
 {
     if(!mSettings)
         return false;
@@ -46,7 +46,7 @@ bool CSettings::saveMotorParams(int cpr, double ratio, double wheel_rad_mm, doub
     return true;
 }
 
-bool CSettings::loadMotorParams(int& cpr, double &ratio, double &wheel_rad_mm, double &wheelbase_mm, qint8& versus_left, qint8& versus_right,
+bool CSettings::loadMotorParams(int& cpr, double &ratio, double &wheel_rad_mm, double &wheelbase_mm, int& versus_left, int& versus_right,
                                 quint8& enable_mode , quint8& enc_pos, qint16& bridge_V )
 {
     if(!mSettings)

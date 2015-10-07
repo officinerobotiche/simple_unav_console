@@ -22,9 +22,9 @@ public:
 
 public:
     bool saveMotorParams(int cpr, double ratio, double wheel_rad_mm, double wheelbase_mm,
-                         qint8 versus_left, qint8 versus_right, quint8 enable_mode, quint8 enc_pos, qint16 bridge_V );
+                         int versus_left, qint8 versus_right, quint8 enable_mode, quint8 enc_pos, qint16 bridge_V );
     bool loadMotorParams(int& cpr, double &ratio, double &wheel_rad_mm, double &wheelbase_mm,
-                         qint8& versus_left, qint8& versus_right,
+                         int &versus_left, int &versus_right,
                           quint8& enable_mode , quint8& enc_pos , qint16 &bridge_V);
 
 

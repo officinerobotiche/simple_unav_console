@@ -14,7 +14,7 @@ RobotParamsCalculateDialog::RobotParamsCalculateDialog(QWidget *parent) :
 
     int cpr;
     double ratio, wheel_rad_mm, wheel_base;
-    qint8 versus_left, versus_right;
+    int versus_left, versus_right;
     quint8 enable_mode;
     quint8 enc_pos;
     qint16 bridge_V;
@@ -66,8 +66,8 @@ bool RobotParamsCalculateDialog::getParams(float& wheel_radius, float& wheel_bas
 
 void RobotParamsCalculateDialog::on_buttonBox_accepted()
 {
-    qint8 versus_left = ui->checkBox_invert_mot_left->isChecked()?-1:1;
-    qint8 versus_right = ui->checkBox_invert_mot_right->isChecked()?-1:1;
+    int versus_left = ui->checkBox_invert_mot_left->isChecked()?-1:1;
+    int versus_right = ui->checkBox_invert_mot_right->isChecked()?-1:1;
 
     quint8 enable_mode = ui->radioButton_polarity_high->isChecked()?1:0;
 

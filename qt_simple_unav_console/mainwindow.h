@@ -65,8 +65,8 @@ private:
     double _ratio;
     double _wheel_rad_mm;
     double _wheel_base_mm;
-    qint8 _versus_left;
-    qint8 _versus_right;
+    int _versus_left;
+    int _versus_right;
     quint8 _enable_mode;
     quint8 _enc_pos;
     qint16 _bridge_V;
@@ -75,6 +75,8 @@ private:
     QVector <double> _vel_vec_1;
     int _vel_idx;
     int _vel_count;
+
+    int _commError;
 };
 
 #endif // MAINWINDOW_H

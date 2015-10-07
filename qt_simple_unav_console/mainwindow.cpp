@@ -17,6 +17,8 @@
 
 #define MEAN_COUNT 10 // Number of values of speed to be averaged
 
+#define MAX_COMM_ERROR 5 // MAxximun number of consequtive communication error allowed
+
 using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -189,6 +191,8 @@ bool MainWindow::connectSerial()
     _fwSpeed = 0.0;
     _rotSpeed = 0.0;
 
+    _commError = 0;
+
     // >>>>> Qt signals connecting
     connect( ui->widget, SIGNAL(newJoypadValues(float,float)),
              this, SLOT(onNewJoypadValues(float,float) ) );
@@ -271,7 +275,22 @@ void MainWindow::onStatusTimerTimeout()
     bool ok1 = _uNavComm->getMotorSpeed( 1, vel1 );
 
     if( !ok0 || !ok1 )
+    {
+        _commError++;
+
+        if( _commError==MAX_COMM_ERROR )
+        {
+            QMessageBox::warning( this, tr("Connection error"), tr("Please verify the correctness of the connection to the board") );
+            disconnectSerial();
+
+            ui->pushButton_connect->setChecked(false);
+            ui->pushButton_connect->setText( tr("Connect") );
+        }
+
         return;
+    }
+
+    _commError=0;
 
     qDebug() << tr("Motor 0: %1").arg(vel0);
     qDebug() << tr("Motor 1: %1").arg(vel1);
@@ -333,7 +352,21 @@ void MainWindow::onCommandTimerTimeout()
             (fabs( _prevRotSpeed - _rotSpeed ) < 0.1 ) )
         return;*/
 
-    sendRobotSpeeds( _fwSpeed, _rotSpeed );
+    if( !sendRobotSpeeds( _fwSpeed, _rotSpeed ) )
+    {
+        _commError++;
+
+        if( _commError==MAX_COMM_ERROR )
+        {
+            QMessageBox::warning( this, tr("Connection error"), tr("Please verify the correctness of the connection to the board") );
+            disconnectSerial();
+
+            ui->pushButton_connect->setChecked(false);
+            ui->pushButton_connect->setText( tr("Connect") );
+        }
+    }
+    else
+        _commError=0;
 }
 
 bool MainWindow::sendRobotSpeeds( double fwSpeed, double rotSpeed )
