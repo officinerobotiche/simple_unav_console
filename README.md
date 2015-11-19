@@ -9,3 +9,6 @@ $ git clone https://github.com/officinerobotiche/simple_unav_console.git
 ```
 * Open the "pro" file with QtCreator and modify "ORBLIBCPP_PATH" with the absolute path to "orblibcpp" (e.g. ```include(../../orblibcpp/orblibcpp/orblibcpp.pri)```)
 * Compile and run
+
+### Support
+Feel free to ask for help, submit suggestions, satisfy your curiosity on our [**Users Group**](https://groups.google.com/forum/?hl=it#!forum/unav-users)

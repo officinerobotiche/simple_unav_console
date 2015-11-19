@@ -48,6 +48,12 @@ private slots:
     void onCommandTimerTimeout();
 
 
+    void on_verticalSlider_fixed_fw_speed_sliderMoved(int position);
+
+    void on_horizontalSlider_fixed_rot_speed_sliderMoved(int position);
+
+    void on_pushButton_stop_clicked();
+
 private:
     Ui::MainWindow *ui;
 

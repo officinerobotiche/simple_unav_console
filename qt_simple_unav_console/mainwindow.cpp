@@ -261,6 +261,9 @@ void MainWindow::onNewJoypadValues(float X, float Y)
     _fwSpeed  = (((float)ui->verticalSlider_max_fw_speed->value())/1000.0f)*newY;
     _rotSpeed = (((float)ui->verticalSlider_max_rot_speed->value())/10.0f)*newX;
 
+    ui->horizontalSlider_fixed_rot_speed->setValue( X/maxAxis*100 + 100 );
+    ui->verticalSlider_fixed_fw_speed->setValue( Y/maxAxis*100 + 100 );
+
     qDebug() << _rotSpeed;
 }
 
@@ -426,5 +429,23 @@ bool MainWindow::sendMotorSpeeds( int16_t speed0, int16_t speed1 )
     return (ok0 & ok1);
 }
 
+void MainWindow::on_verticalSlider_fixed_fw_speed_sliderMoved(int position)
+{
+    double pos = (double)(position-100)/100.0;
+    _fwSpeed  = (((float)ui->verticalSlider_max_fw_speed->value())/1000.0f)*pos;
+}
 
+void MainWindow::on_horizontalSlider_fixed_rot_speed_sliderMoved(int position)
+{
+    double pos = (double)(position-100)/100.0;
+    _rotSpeed = (((float)ui->verticalSlider_max_rot_speed->value())/10.0f)*pos;
+}
 
+void MainWindow::on_pushButton_stop_clicked()
+{
+    _fwSpeed = 0.0;
+    _rotSpeed = 0.0;
+
+    ui->verticalSlider_fixed_fw_speed->setValue(100);
+    ui->horizontalSlider_fixed_rot_speed->setValue(100);
+}
