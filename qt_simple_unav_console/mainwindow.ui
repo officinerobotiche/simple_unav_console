@@ -53,6 +53,9 @@
              <height>0</height>
             </size>
            </property>
+           <property name="editable">
+            <bool>true</bool>
+           </property>
           </widget>
          </item>
          <item>
@@ -62,6 +65,15 @@
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
+           </property>
+           <property name="toolTip">
+            <string>&lt;html&gt;
+&lt;head/&gt;
+&lt;body&gt;
+&lt;p&gt;Click to update the list of available serial ports.&lt;/p&gt;
+&lt;p&gt;If you need to use a serial port that is not listed you can edit the field and then try to Connect [e.g. &lt;span style=&quot; font-style:italic;&quot;&gt;/dev/ttyHS1 &lt;/span&gt;on Nvidia Jetson TK1]&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</string>
            </property>
            <property name="text">
             <string>List Update</string>
