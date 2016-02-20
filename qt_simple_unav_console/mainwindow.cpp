@@ -85,7 +85,11 @@ void MainWindow::on_pushButton_connect_clicked(bool checked)
         if( !connectSerial() )
         {
             ui->pushButton_connect->setChecked(false);
-            QMessageBox::warning( this, tr("Connection error"), tr("Please verify the correctness of the connection to the board") );
+            QMessageBox::warning( this, tr("Connection error"),
+                                  tr("<p>Please verify the correctness of the serial port: <b>%1</b> </p>"
+                                     "<p>If the port name is correct, verify the cable and the power of the board</p>"
+                                     "<p><i><b>Note:</b> if the port name of the serial port that you are using is not available, you can edit the field to add it manually</i></p>")
+                                  .arg( ui->comboBox_serial_port->currentText() ) );
             return;
         }
 
