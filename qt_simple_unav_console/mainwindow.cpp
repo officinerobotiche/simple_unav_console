@@ -71,6 +71,9 @@ void MainWindow::on_actionParameters_triggered()
     g_settings->loadMotorParams( _cpr, _ratio, _wheel_rad_mm, _wheel_base_mm,
                                  _versus_left, _versus_right, _enable_mode, _enc_pos, _bridge_V );
 
+    if( !_uNavComm )
+        return;
+
     _uNavComm->sendMotorParams( 0, _cpr, _ratio, _versus_left, _enable_mode, _enc_pos, _bridge_V );
     // TODO error handling
 
@@ -267,8 +270,6 @@ void MainWindow::onNewJoypadValues(float X, float Y)
 
     ui->horizontalSlider_fixed_rot_speed->setValue( X/maxAxis*100 + 100 );
     ui->verticalSlider_fixed_fw_speed->setValue( Y/maxAxis*100 + 100 );
-
-    qDebug() << _rotSpeed;
 }
 
 void MainWindow::onStatusTimerTimeout()
@@ -287,8 +288,9 @@ void MainWindow::onStatusTimerTimeout()
 
         if( _commError==MAX_COMM_ERROR )
         {
-            QMessageBox::warning( this, tr("Connection error"), tr("Please verify the correctness of the connection to the board") );
             disconnectSerial();
+            QMessageBox::warning( this,
+                                  tr("Connection error"), tr("Please verify the correctness of the connection to the board") );
 
             ui->pushButton_connect->setChecked(false);
             ui->pushButton_connect->setText( tr("Connect") );
@@ -299,8 +301,8 @@ void MainWindow::onStatusTimerTimeout()
 
     _commError=0;
 
-    qDebug() << tr("Motor 0: %1").arg(vel0);
-    qDebug() << tr("Motor 1: %1").arg(vel1);
+    qDebug() << tr("R - Motor 0: %1").arg(vel0);
+    qDebug() << tr("R - Motor 1: %1").arg(vel1);
 
     // >>>>> Averaging
     double mean_vel_0, mean_vel_1;
@@ -365,8 +367,9 @@ void MainWindow::onCommandTimerTimeout()
 
         if( _commError==MAX_COMM_ERROR )
         {
-            QMessageBox::warning( this, tr("Connection error"), tr("Please verify the correctness of the connection to the board") );
             disconnectSerial();
+            QMessageBox::warning( this, tr("Connection error"), tr("Please verify the correctness of the connection to the board") );
+
 
             ui->pushButton_connect->setChecked(false);
             ui->pushButton_connect->setText( tr("Connect") );
@@ -422,15 +425,6 @@ bool MainWindow::stopMotor( quint8 motorIdx )
 bool MainWindow::getMotorSpeeds()
 {
     return false;
-}
-
-bool MainWindow::sendMotorSpeeds( int16_t speed0, int16_t speed1 )
-{
-    // TODO replace with the correct function in _uNavComm
-    bool ok0 = _uNavComm->sendMotorSpeed( 0, speed0 );
-    bool ok1 = _uNavComm->sendMotorSpeed( 1, speed1 );
-
-    return (ok0 & ok1);
 }
 
 void MainWindow::on_verticalSlider_fixed_fw_speed_sliderMoved(int position)

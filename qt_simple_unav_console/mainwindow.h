@@ -27,7 +27,6 @@ protected:
 
     bool sendRobotSpeeds(double fwSpeed, double rotSpeed );
 
-    bool sendMotorSpeeds( int16_t speed0, int16_t speed1 ); ///< Send motor speeds in rad/sec
     bool stopMotor( quint8 motorIdx ); ///< Stops a motor
 
     bool getMotorSpeeds(); ///< Retrieve the speed of both motors
